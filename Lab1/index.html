@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebAR — Leibniz</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
+  </head>
+  <body style="margin: 0; overflow: hidden;">
+    <a-scene embedded arjs>
+
+      <a-assets>
+        <audio id="a0" src="audio/booklet_author.mp3"></audio>
+        <audio id="a1" src="audio/device_author.mp3"></audio>
+        <audio id="a2" src="audio/device_function.mp3"></audio>
+      </a-assets>
+
+      <!-- Marker 0 -->
+      <a-marker type="barcode" value="0" id="m0">
+        <a-image src="img/booklet_author.jpg" width="1" height="1" rotation="-90 0 0"></a-image>
+        <a-entity sound="src: #a0" id="s0"></a-entity>
+      </a-marker>
+
+      <!-- Marker 1 -->
+      <a-marker type="barcode" value="1" id="m1">
+        <a-image src="img/device_author.jpg" width="1" height="1" rotation="-90 0 0"></a-image>
+        <a-entity sound="src: #a1" id="s1"></a-entity>
+      </a-marker>
+
+      <!-- Marker 2 -->
+      <a-marker type="barcode" value="2" id="m2">
+        <a-image src="img/leibniz_device.jpg" width="1" height="1" rotation="-90 0 0"></a-image>
+        <a-entity sound="src: #a2" id="s2"></a-entity>
+      </a-marker>
+
+      <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+      let sounds = {
+        m0: document.querySelector("#s0"),
+        m1: document.querySelector("#s1"),
+        m2: document.querySelector("#s2")
+      };
+
+      Object.keys(sounds).forEach((markerId) => {
+        const marker = document.querySelector("#" + markerId);
+        const sound = sounds[markerId];
+
+        marker.addEventListener("markerFound", () => {
+          stopAll();
+          sound.components.sound.playSound();
+        });
+
+        marker.addEventListener("markerLost", () => {
+          sound.components.sound.stopSound();
+        });
+      });
+
+      function stopAll() {
+        Object.values(sounds).forEach(s => s.components.sound.stopSound());
+      }
+    </script>
+  </body>
+</html>
