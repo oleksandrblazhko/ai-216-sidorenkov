@@ -1,0 +1,17 @@
+name: Lint Check
+
+on:
+  push:
+    branches: [ SW_LabWork_4 ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check-json:
+    runs-on: ubuntu-latest
+    name: Validate JSON files
+    steps:
+      - uses: actions/checkout@v3
+      - name: Check all JSON files
+        run: |
+          find . -name "*.json" -exec cat {} \; | jq empty || exit 1
